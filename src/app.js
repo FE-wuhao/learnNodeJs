@@ -2,7 +2,7 @@
  * @Author: 吴灏
  * @Date: 2021-07-17 17:07:54
  * @LastEditors: 吴灏
- * @LastEditTime: 2021-07-26 17:56:16
+ * @LastEditTime: 2021-07-27 00:38:07
  * @Description: file content
  */
 // #region nodejs内置os库
@@ -77,17 +77,48 @@ const port = 3001;
 
 const app = express();
 
-app.get("/user/byName", (req, res) => {
-  const params = req.query;
+// app.get("/user/byName", (req, res) => {
+//   const params = req.query;
 
-  res.send(params);
-});
+//   res.send(params);
+// });
 
-app.get("/user/byAge", (req, res) => {
-  const params = req.query;
+// app.get("/user/byAge", (req, res) => {
+//   const params = req.query;
 
-  res.send(params);
-});
+//   res.send(params);
+// });
+// // app.all响应所有的method
+// app.all("/user/byname", (req, res) => {
+//   res.send(`ceshi${req.method}`);
+// });
+// // app.all响应所有的请求
+// app.all("*", (req, res) => {
+//   res.send(`ceshi${req.method} ${req.path}`);
+// });
+
+// // app.use实现响应所有的请求(把路由当作中间件)
+// app.use((req, res) => {
+//   res.send(`ceshi${req.method} ${req.path}`);
+// });
+
+/**
+ * 做路由拆分，假设有三个路由：member、order、product
+ * 1.做文件的拆分
+ * 2.注册路由
+ */
+// 引入
+const memberRouter = require("./member.router");
+// 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
+app.use("/member", memberRouter);
+// 引入
+const orderRouter = require("./order.router");
+// 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
+app.use("/order", orderRouter);
+// 引入
+const productRouter = require("./product.router");
+// 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
+app.use("/product", productRouter);
 
 app.listen(port, () => {
   console.log("服务启动成功");

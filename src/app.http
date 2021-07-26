@@ -2,3 +2,18 @@
 POST http://127.0.0.1:3001/engliseName HTTP/1.1
 ### get请求
 GET http://127.0.0.1:3001/name/26 HTTP/1.1
+### 不区分method响应同一个请求
+GET http://127.0.0.1:3001/user/byname HTTP/1.1
+### 
+POST  http://127.0.0.1:3001/user/byname HTTP/1.1
+###
+PUT http://127.0.0.1:3001/user/byname HTTP/1.1
+###
+DELETE http://127.0.0.1:3001/user/byname HTTP/1.1
+### 路由拆分：请求member的list接口
+### member
+GET http://127.0.0.1:3001/member/list HTTP/1.1
+### order
+GET http://127.0.0.1:3001/order/list HTTP/1.1
+### product
+GET http://127.0.0.1:3001/product/list HTTP/1.1
