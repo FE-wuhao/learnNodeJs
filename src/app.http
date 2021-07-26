@@ -1,0 +1,4 @@
+### post请求
+POST http://127.0.0.1:3001/engliseName HTTP/1.1
+### get请求
+GET http://127.0.0.1:3001/name/26 HTTP/1.1
