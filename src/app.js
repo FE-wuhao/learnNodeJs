@@ -2,7 +2,7 @@
  * @Author: 吴灏
  * @Date: 2021-07-17 17:07:54
  * @LastEditors: 吴灏
- * @LastEditTime: 2021-08-01 11:45:17
+ * @LastEditTime: 2021-08-02 20:39:11
  * @Description: file content
  */
 // #region nodejs内置os库
@@ -133,8 +133,42 @@ app.use("/product", productRouter);
  * 作用：
  *    1.异常处理
  *    2.处理业务，然后转交控制权（next函数）
+ *    3.响应请求--结束响应==>当作路由的处理函数
  */
 
-function demoMiddleware(err, req, res, next) {}
+function validateNameMiddleware(req, res, next) {
+  const { name } = req.query;
 
+  if (!name || !name.length) {
+    console.log("jinlaile ");
+    res.json({
+      code: 1,
+      data: null,
+      message: "缺少name参数",
+    });
+  } else {
+    console.log("next ");
+    next();
+  }
+}
+
+// app.all("*", validateNameMiddleware);
+app.use(validateNameMiddleware);
+
+app.get("/middleware", (req, res) => {
+  res.json({
+    code: 0,
+    data: null,
+    message: "成功接收到了name",
+  });
+});
+
+/**
+ * 中间件使用场景：
+ * 1.app级别的使用
+ *  1.注册的时候，一定在最顶级
+ *  2.通过app.use加载进来
+ *
+ * 2.router级别的使用
+ */
 // #endregion
