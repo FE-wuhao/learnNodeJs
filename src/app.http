@@ -19,3 +19,5 @@ GET http://127.0.0.1:3001/order/list HTTP/1.1
 GET http://127.0.0.1:3001/product/list HTTP/1.1
 ###中间件
 GET http://127.0.0.1:3001/middleware HTTP/1.1
+###异常
+GET http://127.0.0.1:3001/error HTTP/1.1

@@ -2,7 +2,7 @@
  * @Author: 吴灏
  * @Date: 2021-07-17 17:07:54
  * @LastEditors: 吴灏
- * @LastEditTime: 2021-08-02 20:39:11
+ * @LastEditTime: 2021-08-02 21:04:33
  * @Description: file content
  */
 // #region nodejs内置os库
@@ -136,24 +136,24 @@ app.use("/product", productRouter);
  *    3.响应请求--结束响应==>当作路由的处理函数
  */
 
-function validateNameMiddleware(req, res, next) {
-  const { name } = req.query;
+// function validateNameMiddleware(req, res, next) {
+//   const { name } = req.query;
 
-  if (!name || !name.length) {
-    console.log("jinlaile ");
-    res.json({
-      code: 1,
-      data: null,
-      message: "缺少name参数",
-    });
-  } else {
-    console.log("next ");
-    next();
-  }
-}
+//   if (!name || !name.length) {
+//     console.log("jinlaile ");
+//     res.json({
+//       code: 1,
+//       data: null,
+//       message: "缺少name参数",
+//     });
+//   } else {
+//     console.log("next ");
+//     next();
+//   }
+// }
 
-// app.all("*", validateNameMiddleware);
-app.use(validateNameMiddleware);
+// // app.all("*", validateNameMiddleware);
+// app.use(validateNameMiddleware);
 
 app.get("/middleware", (req, res) => {
   res.json({
@@ -172,3 +172,35 @@ app.get("/middleware", (req, res) => {
  * 2.router级别的使用
  */
 // #endregion
+
+/**
+ * 异常处理
+ *
+ * 异常处理一定是收口的（在同一个地方处理所有的异常）
+ */
+
+app.get("/error", (req, res) => {
+  res.json({ error });
+});
+
+function errorHandleMiddleware(err, req, res, next) {
+  if (err) {
+    res.status(500).json({
+      code: 0,
+      data: null,
+      message: `服务器异常:${err.message}`,
+    });
+  }
+}
+
+app.use(errorHandleMiddleware);
+
+function notFunndHandler(req, res, next) {
+  res.json({
+    code: 0,
+    data: null,
+    message: `资源不存在`,
+  });
+}
+
+app.use(notFunndHandler);
