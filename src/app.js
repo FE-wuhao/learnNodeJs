@@ -2,7 +2,7 @@
  * @Author: 吴灏
  * @Date: 2021-07-17 17:07:54
  * @LastEditors: 吴灏
- * @LastEditTime: 2021-07-27 00:38:07
+ * @LastEditTime: 2021-08-01 11:45:17
  * @Description: file content
  */
 // #region nodejs内置os库
@@ -73,9 +73,13 @@
  */
 const express = require("express");
 
+const app = express();
+
 const port = 3001;
 
-const app = express();
+app.listen(port, () => {
+  console.log("服务启动成功");
+});
 
 // app.get("/user/byName", (req, res) => {
 //   const params = req.query;
@@ -119,8 +123,18 @@ app.use("/order", orderRouter);
 const productRouter = require("./product.router");
 // 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
 app.use("/product", productRouter);
+// #endregion
 
-app.listen(port, () => {
-  console.log("服务启动成功");
-});
+// #region 中间件
+/**
+ * 结构：
+ *    1.本身是一个函数
+ *    2.入参：err,req,res,next,其中next是一个函数
+ * 作用：
+ *    1.异常处理
+ *    2.处理业务，然后转交控制权（next函数）
+ */
+
+function demoMiddleware(err, req, res, next) {}
+
 // #endregion
