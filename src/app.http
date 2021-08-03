@@ -21,3 +21,9 @@ GET http://127.0.0.1:3001/product/list HTTP/1.1
 GET http://127.0.0.1:3001/middleware HTTP/1.1
 ###异常
 GET http://127.0.0.1:3001/error HTTP/1.1
+###sequelize 创建用户
+GET http://127.0.0.1:3001/creatUser?name=Tom HTTP/1.1
+###sequelize  返回用户列表
+GET http://127.0.0.1:3001/listUser HTTP/1.1
+###sequelize  返回某一个用户的详细信息
+GET http://127.0.0.1:3001/readUser/3 HTTP/1.1

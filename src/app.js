@@ -2,7 +2,7 @@
  * @Author: 吴灏
  * @Date: 2021-07-17 17:07:54
  * @LastEditors: 吴灏
- * @LastEditTime: 2021-08-02 21:04:33
+ * @LastEditTime: 2021-08-03 21:30:00
  * @Description: file content
  */
 // #region nodejs内置os库
@@ -111,18 +111,18 @@ app.listen(port, () => {
  * 1.做文件的拆分
  * 2.注册路由
  */
-// 引入
-const memberRouter = require("./member.router");
-// 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
-app.use("/member", memberRouter);
-// 引入
-const orderRouter = require("./order.router");
-// 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
-app.use("/order", orderRouter);
-// 引入
-const productRouter = require("./product.router");
-// 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
-app.use("/product", productRouter);
+// // 引入
+// const memberRouter = require("./member.router");
+// // 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
+// app.use("/member", memberRouter);
+// // 引入
+// const orderRouter = require("./order.router");
+// // 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
+// app.use("/order", orderRouter);
+// // 引入
+// const productRouter = require("./product.router");
+// // 注册,use的第一个参数的作用是为注册的一整个路由添加一个根前缀
+// app.use("/product", productRouter);
 // #endregion
 
 // #region 中间件
@@ -155,13 +155,13 @@ app.use("/product", productRouter);
 // // app.all("*", validateNameMiddleware);
 // app.use(validateNameMiddleware);
 
-app.get("/middleware", (req, res) => {
-  res.json({
-    code: 0,
-    data: null,
-    message: "成功接收到了name",
-  });
-});
+// app.get("/middleware", (req, res) => {
+//   res.json({
+//     code: 0,
+//     data: null,
+//     message: "成功接收到了name",
+//   });
+// });
 
 /**
  * 中间件使用场景：
@@ -179,28 +179,79 @@ app.get("/middleware", (req, res) => {
  * 异常处理一定是收口的（在同一个地方处理所有的异常）
  */
 
-app.get("/error", (req, res) => {
-  res.json({ error });
+// app.get("/error", (req, res) => {
+//   res.json({ error });
+// });
+
+// function errorHandleMiddleware(err, req, res, next) {
+//   if (err) {
+//     res.status(500).json({
+//       code: 0,
+//       data: null,
+//       message: `服务器异常:${err.message}`,
+//     });
+//   }
+// }
+
+// app.use(errorHandleMiddleware);
+
+// function notFunndHandler(req, res, next) {
+//   res.json({
+//     code: 0,
+//     data: null,
+//     message: `资源不存在`,
+//   });
+// }
+
+// app.use(notFunndHandler);
+
+/**
+ * mysql配合orm框架sequelize
+ * 连接模型：application->orm(sequelize)->驱动(mysql2)->db(mysql)
+ * 操作步骤：
+ * 1.npx sequelize-cli model:generate --name User --attributes firstName:string,lastName:string,email:string 创建表模型
+ * 2.npx sequelize-cli db:migrate 将表模型映射到mysql，创建对应的表
+ * 3.const models = require("../models") 引入models，进行数据库操作
+ */
+// 引入数据模型
+const models = require("../models");
+
+app.get("/creatUser", async (req, res) => {
+  // req.query拿到的是形如?x=a的方式传入的参数
+  const { name } = req.query;
+
+  const result = await models.User.create({
+    firstName: name,
+    lastName: name,
+    email: name,
+  });
+
+  res.json(result);
 });
 
-function errorHandleMiddleware(err, req, res, next) {
-  if (err) {
-    res.status(500).json({
-      code: 0,
-      data: null,
-      message: `服务器异常:${err.message}`,
-    });
-  }
-}
+app.get("/listUser", async (req, res) => {
+  const list = await models.User.findAll();
 
-app.use(errorHandleMiddleware);
-
-function notFunndHandler(req, res, next) {
   res.json({
-    code: 0,
-    data: null,
-    message: `资源不存在`,
+    code: list ? 0 : 1,
+    data: list,
+    message: list ? "读取成功" : "读取失败",
   });
-}
+});
 
-app.use(notFunndHandler);
+app.get("/readUser/:id", async (req, res) => {
+  // req.params拿到的是通过形如xx/:id的形式（user/645853712）拿到的参数
+  const { id } = req.params;
+
+  const user = await models.User.findOne({
+    where: {
+      id,
+    },
+  });
+
+  res.json({
+    code: user ? 0 : 1,
+    data: user,
+    message: user ? "读取用户信息成功" : "用户不存在",
+  });
+});
